@@ -1,9 +1,9 @@
 # IMU_10DOF
 
-This library is for Grove - IMU 10DOF and Xadow - IMU 10DOF modules. All the mentioned modules are combination of MPU-9250 and BMP180. So this library is the combination of:
+This library is for Grove - IMU 10DOF V2 and Xadow - IMU 10DOF modules. All the mentioned modules are combination of MPU-9250 and BMP280. So this library is the combination of:
 
 * Library for MPU9250 - thanks to Jeff Rowberg <jeff@rowberg.net>, the MIT license
-* Library for BMP180 - thanks to LG, LGPL license
+* Library for BMP280
 
 
 ----
