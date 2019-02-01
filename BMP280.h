@@ -29,7 +29,6 @@
 #define BMP280_REG_PRESSUREDATA    0xF7
 #define BMP280_REG_TEMPDATA        0xFA
 
-
 class BMP280
 {
 public:
@@ -82,7 +81,7 @@ public:
 			 );
 
 private:
-  // Calibratino data
+  // Calibration data
   uint16_t dig_T1;
   int16_t dig_T2;
   int16_t dig_T3;
