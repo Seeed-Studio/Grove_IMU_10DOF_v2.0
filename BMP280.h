@@ -105,6 +105,40 @@ private:
   int16_t bmp280ReadS16LE(uint8_t reg);
   uint32_t bmp280Read24(uint8_t reg);
   void writeRegister(uint8_t reg, uint8_t val);
+	
+	// config register
+    struct config {
+        // inactive duration (standby time) in normal mode
+        unsigned int t_sb : 3;
+
+        // filter settings
+        unsigned int filter : 3;
+
+        // unused - don't set
+        unsigned int none : 1;
+        unsigned int spi3w_en : 1;
+
+        unsigned int get() {
+            return (t_sb << 5) | (filter << 3) | spi3w_en;
+        }
+    }; config _configReg;
+
+    // ctrl_meas register
+    struct ctrl_meas {
+        // temperature oversampling
+        unsigned int osrs_t : 3;
+
+        // pressure oversampling
+        unsigned int osrs_p : 3;
+
+        // device mode
+        unsigned int mode : 2;
+
+        unsigned int get() {
+            return (osrs_t << 5) | (osrs_p << 3) | mode;
+        }
+    }; ctrl_meas _measReg;
+
 };
 
 #endif
