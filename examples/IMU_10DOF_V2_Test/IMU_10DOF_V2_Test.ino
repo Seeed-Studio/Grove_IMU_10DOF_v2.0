@@ -69,6 +69,13 @@ void setup() {
     accelgyro.initialize();
     bmp280.init();
 
+    // See datasheet
+    //bmp280.setSampling(BMP280::MODE_NORMAL,  // mode
+    //              BMP280::SAMPLING_X2,  // temperature, not more than x2
+    //              BMP280::SAMPLING_X16, // pressure                  
+    //              BMP280::FILTER_X16,   // filter
+    //              BMP280::STANDBY_MS_500); // standby
+
     // verify connection
     Serial.println("Testing device connections...");
     Serial.println(accelgyro.testConnection() ? "MPU9250 connection successful" : "MPU9250 connection failed");
