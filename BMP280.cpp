@@ -1,7 +1,6 @@
 #include "BMP280.h"
 
-bool BMP280::init(void)
-{
+bool BMP280::init(void) {
   Wire.begin();
 
   if(bmp280Read8(BMP280_REG_CHIPID) != 0x58)
@@ -21,12 +20,14 @@ bool BMP280::init(void)
   dig_P8 = bmp280ReadS16LE(BMP280_REG_DIG_P8);
   dig_P9 = bmp280ReadS16LE(BMP280_REG_DIG_P9);
 
-  writeRegister(BMP280_REG_CONTROL, 0x3F);
+  setSampling(); // use defaults
+  delay(100);
+
+  //writeRegister(BMP280_REG_CONTROL, 0x3F);
   return true;
 }
 
-float BMP280::getTemperature(void)
-{
+float BMP280::getTemperature(void) {
   int32_t var1, var2;
 
   int32_t adc_T = bmp280Read24(BMP280_REG_TEMPDATA);
@@ -43,8 +44,7 @@ float BMP280::getTemperature(void)
   return T/100;
 }
 
-uint32_t BMP280::getPressure(void)
-{
+uint32_t BMP280::getPressure(void) {
   int64_t var1, var2, p;
 
   // Call getTemperature to get t_fine
@@ -71,8 +71,7 @@ uint32_t BMP280::getPressure(void)
   return (uint32_t)p/256;
 }
 
-float BMP280::calcAltitude(float pressure)
-{
+float BMP280::calcAltitude(float pressure) {
   float A = pressure/101325;
   float B = 1/5.25588;
   float C = pow(A,B);
@@ -81,8 +80,7 @@ float BMP280::calcAltitude(float pressure)
   return C;
 }
 
-uint8_t BMP280::bmp280Read8(uint8_t reg)
-{
+uint8_t BMP280::bmp280Read8(uint8_t reg) {
   Wire.beginTransmission(BMP280_ADDRESS);
   Wire.write(reg);
   Wire.endTransmission();
@@ -92,8 +90,7 @@ uint8_t BMP280::bmp280Read8(uint8_t reg)
   return Wire.read();
 }
 
-uint16_t BMP280::bmp280Read16(uint8_t reg)
-{
+uint16_t BMP280::bmp280Read16(uint8_t reg) {
   uint8_t msb, lsb;
 
   Wire.beginTransmission(BMP280_ADDRESS);
@@ -108,24 +105,20 @@ uint16_t BMP280::bmp280Read16(uint8_t reg)
   return (uint16_t) msb<<8 | lsb;
 }
 
-uint16_t BMP280::bmp280Read16LE(uint8_t reg)
-{
+uint16_t BMP280::bmp280Read16LE(uint8_t reg) {
   uint16_t data = bmp280Read16(reg);
   return (data >> 8) | (data << 8);
 }
 
-int16_t BMP280::bmp280ReadS16(uint8_t reg)
-{
+int16_t BMP280::bmp280ReadS16(uint8_t reg) {
   return (int16_t)bmp280Read16(reg);
 }
 
-int16_t BMP280::bmp280ReadS16LE(uint8_t reg)
-{
+int16_t BMP280::bmp280ReadS16LE(uint8_t reg) {
   return (int16_t)bmp280Read16LE(reg);
 }
 
-uint32_t BMP280::bmp280Read24(uint8_t reg)
-{
+uint32_t BMP280::bmp280Read24(uint8_t reg) {
   uint32_t data;
 
   Wire.beginTransmission(BMP280_ADDRESS);
@@ -143,10 +136,26 @@ uint32_t BMP280::bmp280Read24(uint8_t reg)
   return data;
 }
 
-void BMP280::writeRegister(uint8_t reg, uint8_t val)
-{
+void BMP280::writeRegister(uint8_t reg, uint8_t val) {
   Wire.beginTransmission(BMP280_ADDRESS); // start transmission to device
   Wire.write(reg);       // send register address
   Wire.write(val);         // send value to write
   Wire.endTransmission();     // end transmission
+}
+
+void BMP280::setSampling(sensor_mode mode,
+		 sensor_sampling   tempSampling,
+		 sensor_sampling   pressSampling,
+		 sensor_filter     filter,
+		 standby_duration  duration) {
+
+    _measReg.mode     = mode;
+    _measReg.osrs_t   = tempSampling;
+    _measReg.osrs_p   = pressSampling;
+    
+    _configReg.filter = filter;
+    _configReg.t_sb   = duration;
+    
+    writeRegister(BMP280_REG_CONFIG, _configReg.get());
+    writeRegister(BMP280_REG_CONTROL, _measReg.get());
 }
