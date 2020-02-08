@@ -654,7 +654,7 @@ class MPU9250 {
         bool getTempSensorEnabled();
         void setTempSensorEnabled(bool enabled);
         uint8_t getClockSource();
-        void setClockSource(uint8_t source);
+        void __setClockSource(uint8_t source);
 
         // PWR_MGMT_2 register
         uint8_t getWakeFrequency();
