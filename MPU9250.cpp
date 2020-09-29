@@ -35,6 +35,7 @@ THE SOFTWARE.
 */
 
 #include "MPU9250.h"
+#include <Wire.h>
 
 /** Default constructor, uses default I2C address.
  * @see MPU9250_DEFAULT_ADDRESS
@@ -72,7 +73,12 @@ void MPU9250::initialize() {
  * @return True if connection is valid, false otherwise
  */
 bool MPU9250::testConnection() {
-    return getDeviceID() == 0x71;
+    Wire.beginTransmission(MPU9250_DEFAULT_ADDRESS);
+    byte error = Wire.endTransmission();
+    if (error == 0) {
+        return true;
+    }
+    return false;
 }
 
 // AUX_VDDIO register (InvenSense demo code calls this RA_*G_OFFS_TC)
