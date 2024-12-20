@@ -43,6 +43,12 @@ THE SOFTWARE.
 
 #include "I2Cdev.h"
 
+#if defined(CONFIG_IDF_TARGET_ESP32C3) || defined(CONFIG_IDF_TARGET_ESP32C6) || defined(CONFIG_IDF_TARGET_ESP32S3)
+uint8_t min(uint8_t a, uint8_t b) {
+    return (a < b) ? a : b;
+}
+#endif
+
 #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
 
     #ifdef I2CDEV_IMPLEMENTATION_WARNINGS

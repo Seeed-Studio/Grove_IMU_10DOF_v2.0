@@ -38,7 +38,11 @@ THE SOFTWARE.
 #define _MPU9250_H_
 
 #include "I2Cdev.h"
+#if defined(CONFIG_IDF_TARGET_ESP32C3) || defined(CONFIG_IDF_TARGET_ESP32C6) || defined(CONFIG_IDF_TARGET_ESP32S3)
+#include <pgmspace.h>
+#else
 #include <avr/pgmspace.h>
+#endif
 
 //Magnetometer Registers
 #define MPU9150_RA_MAG_ADDRESS		0x0C
